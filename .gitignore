@@ -5,6 +5,7 @@
 nohup.out
 
 # Gradle files
+.idea
 .gradle/
 gradlew
 gradlew.bat
