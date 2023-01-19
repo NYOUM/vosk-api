@@ -13,6 +13,7 @@ local.properties
 gradle.properties
 
 # Android
+android/.idea
 android/build
 android/lib/build
 android/model-en/build
