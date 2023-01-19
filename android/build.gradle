@@ -2,6 +2,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.0'
@@ -10,56 +11,17 @@ buildscript {
 }
 
 allprojects {
-    version = '0.3.45'
+    version = '0.3.46'
 }
 
 subprojects {
 
     apply plugin: 'com.android.library'
     apply plugin: 'maven-publish'
-    apply plugin: 'com.vanniktech.maven.publish'
-
-    plugins.withId('com.vanniktech.maven.publish') {
-        mavenPublish {
-            group = 'com.alphacephei'
-            version = version
-            sonatypeHost = 's01'
-            androidVariantToPublish = 'release'
-        }
-    }
 
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
     }
-
-    publishing {
-        publications {
-            aar(MavenPublication) {
-                groupId 'com.alphacephei'
-                version version
-                pom {
-                    url = 'http://www.alphacephei.com.com/vosk/'
-                    licenses {
-                        license {
-                            name = 'The Apache License, Version 2.0'
-                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = 'com.alphacephei'
-                            name = 'Alpha Cephei Inc'
-                            email = 'contact@alphacephei.com'
-                        }
-                    }
-                    scm {
-                        connection = 'scm:git:git://github.com/alphacep/vosk-api.git'
-                        url = 'https://github.com/alphacep/vosk-api/'
-                    }
-                }
-            }
-        }
-    }
-
 }

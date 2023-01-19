@@ -32,16 +32,3 @@ tasks.register('genUUID') {
 }
 
 preBuild.dependsOn(genUUID)
-
-publishing {
-    publications {
-        aar(MavenPublication) {
-            artifactId = archiveName
-            artifact("$buildDir/outputs/aar/$archiveName-release.aar")
-            pom {
-                name = pomName
-                description = pomDescription
-            }
-        }
-    }
-}

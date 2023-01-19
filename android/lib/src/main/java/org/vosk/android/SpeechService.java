@@ -14,6 +14,7 @@
 
 package org.vosk.android;
 
+import android.annotation.SuppressLint;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder.AudioSource;
@@ -48,6 +49,7 @@ public class SpeechService {
      *
      * @throws IOException thrown if audio recorder can not be created for some reason.
      */
+    @SuppressLint("MissingPermission")
     public SpeechService(Recognizer recognizer, float sampleRate) throws IOException {
         this.recognizer = recognizer;
         this.sampleRate = (int) sampleRate;
