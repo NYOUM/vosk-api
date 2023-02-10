@@ -20,10 +20,11 @@ public class SpeechServiceForAudioBuffers {
 
     private Boolean isRecording;
 
-    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private final Handler mainHandler;
 
-    public SpeechServiceForAudioBuffers(Recognizer recognizer) {
+    public SpeechServiceForAudioBuffers(Recognizer recognizer, Handler handler) {
         this.recognizer = recognizer;
+        this.mainHandler = handler;
     }
 
     /**
@@ -57,13 +58,15 @@ public class SpeechServiceForAudioBuffers {
             recognizerThread.stopRecognition();
             recognizerThread.interrupt();
             recognizerThread.join();
+
+            recognizerThread = null;
+            return true;
         } catch (InterruptedException e) {
             // Restore the interrupted status.
-            Thread.currentThread().interrupt();
+            Log.e("SpeechServiceFAB", "stopRecognizerThread() -> " + e.getLocalizedMessage());
+            recognizerThread = null;
+            return false;
         }
-
-        recognizerThread = null;
-        return true;
     }
 
     /**
