@@ -20,12 +20,9 @@ public class SpeechServiceForAudioBuffers {
 
     private Boolean isRecording;
 
-    private final Handler mainHandler;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    public SpeechServiceForAudioBuffers(Recognizer recognizer, Handler handler) {
-        this.recognizer = recognizer;
-        this.mainHandler = handler;
-    }
+    public SpeechServiceForAudioBuffers(Recognizer recognizer) { this.recognizer = recognizer; }
 
     /**
      * Starts recognition. Does nothing if recognition is active.
@@ -38,7 +35,7 @@ public class SpeechServiceForAudioBuffers {
 
         recognizerThread = new RecognizerThread(recognitionListener);
         isRecording = true;
-        recognizerThread.start();
+//        recognizerThread.start();
         return true;
     }
 
@@ -56,12 +53,12 @@ public class SpeechServiceForAudioBuffers {
 
         try {
             recognizerThread.stopRecognition();
-            recognizerThread.interrupt();
-            recognizerThread.join();
+//            recognizerThread.interrupt();
+//            recognizerThread.join();
 
             recognizerThread = null;
             return true;
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             // Restore the interrupted status.
             Log.e("SpeechServiceFAB", "stopRecognizerThread() -> " + e.getLocalizedMessage());
             recognizerThread = null;
@@ -90,7 +87,7 @@ public class SpeechServiceForAudioBuffers {
         return stopRecognizerThread();
     }
 
-    private final class RecognizerThread extends Thread {
+    private final class RecognizerThread {
 
         WeakReference<RecognitionListener> listener;
 
@@ -116,10 +113,10 @@ public class SpeechServiceForAudioBuffers {
             mainHandler.post(() -> listener.get().onFinalResult(extractFinalResult(finalResult)));
         }
 
-        @Override
-        public void run() {
-            while(isRecording) { /* Keeping Thread running while recording */ }
-        }
+//        @Override
+//        public void run() {
+//            while(isRecording) { /* Keeping Thread running while recording */ }
+//        }
     }
 
     public String extractPartialResult(String partialResult) {
