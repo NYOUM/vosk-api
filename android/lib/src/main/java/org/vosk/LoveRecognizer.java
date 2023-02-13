@@ -1,8 +1,7 @@
-package org.vosk.android;
+package org.vosk;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.vosk.Recognizer;
 
 public class LoveRecognizer {
 
@@ -10,20 +9,22 @@ public class LoveRecognizer {
 
     public LoveRecognizer(Recognizer recognizer) { this.recognizer = recognizer; }
 
-    public boolean acceptWaveForm(byte[] audioBuffer, int readerLength) {
+    public boolean acceptWaveForm(short[] audioBuffer, int readerLength) {
         return recognizer.acceptWaveForm(audioBuffer, readerLength);
     }
 
     public String getResult() {
-        return recognizer.getResult();
+        // TODO Result deserialization
+        return extractResult(recognizer.getResult());
     }
 
-    public String getPartialResult() {
-        return recognizer.getPartialResult();
+    public PartialResult getPartialResult() {
+        return extractPartialResult(recognizer.getPartialResult());
     }
 
     public String getFinalResult() {
-        return recognizer.getFinalResult();
+        // TODO Result deserialization
+        return extractResult(recognizer.getFinalResult());
     }
 
     public void setWords(boolean words) {
@@ -31,22 +32,19 @@ public class LoveRecognizer {
     }
 
     public void setPartialWords(boolean partialWords) {
-        recognizer.setWords(partialWords);
+        recognizer.setPartialWords(partialWords);
     }
 
-    public String extractPartialResult(String partialResult) {
+    public PartialResult extractPartialResult(String partialResult) {
         try {
             JSONObject partialObject = new JSONObject(partialResult);
-            return partialObject.getString("partial");
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
+            
+            PartialResult deserialized = new PartialResult();
+            deserialized.partial = partialObject.getString("partial");
 
-    public String extractFinalResult(String finalResult) {
-        try {
-            JSONObject partialObject = new JSONObject(finalResult);
-            return partialObject.getString("text");
+            // TODO partial_result list
+
+            return deserialized;
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

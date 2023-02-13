@@ -41,6 +41,7 @@ task buildVosk(type: Exec) {
 
 dependencies {
     api 'net.java.dev.jna:jna:4.4.0@aar'
+    implementation 'org.jetbrains:annotations:15.0'
 }
 
 //preBuild.dependsOn buildVosk
