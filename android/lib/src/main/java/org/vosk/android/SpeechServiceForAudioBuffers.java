@@ -20,9 +20,12 @@ public class SpeechServiceForAudioBuffers {
 
     private Boolean isRecording;
 
-    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private final Handler mainHandler;
 
-    public SpeechServiceForAudioBuffers(Recognizer recognizer) { this.recognizer = recognizer; }
+    public SpeechServiceForAudioBuffers(Recognizer recognizer, Handler handler) {
+        this.recognizer = recognizer;
+        this.mainHandler = handler;
+    }
 
     /**
      * Starts recognition. Does nothing if recognition is active.
