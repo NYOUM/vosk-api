@@ -18,15 +18,15 @@ public class LoveRecognizer {
         return recognizer.acceptWaveForm(audioBuffer, readerLength);
     }
 
-    public Result getResult() {
+    public RecognizerResult getResult() {
         return extractResult(recognizer.getResult());
     }
 
-    public PartialResult getPartialResult() {
+    public PartialRecognizerResult getPartialResult() {
         return extractPartialResult(recognizer.getPartialResult());
     }
 
-    public Result getFinalResult() {
+    public RecognizerResult getFinalResult() {
         return extractResult(recognizer.getFinalResult());
     }
 
@@ -38,11 +38,11 @@ public class LoveRecognizer {
         recognizer.setPartialWords(partialWords);
     }
 
-    private PartialResult extractPartialResult(String partialResult) {
+    private PartialRecognizerResult extractPartialResult(String partialResult) {
         try {
             JSONObject partialObject = new JSONObject(partialResult);
             
-            PartialResult deserialized = new PartialResult(
+            PartialRecognizerResult deserialized = new PartialRecognizerResult(
                     partialObject.getString("partial"),
                     deserializeWords(partialObject, "partial_result")
             );
@@ -53,11 +53,11 @@ public class LoveRecognizer {
         }
     }
 
-    private Result extractResult(String result) {
+    private RecognizerResult extractResult(String result) {
         try {
             JSONObject resultJSON = new JSONObject(result);
 
-            Result deserialized = new Result(
+            RecognizerResult deserialized = new RecognizerResult(
                     resultJSON.getString("text"),
                     deserializeWords(resultJSON, "result")
             );
