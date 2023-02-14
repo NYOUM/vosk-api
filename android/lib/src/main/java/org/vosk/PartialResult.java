@@ -9,4 +9,9 @@ public class PartialResult {
 
     @Nullable
     public List<WordResult> partialResult;
+
+    public PartialResult(String partial, List<WordResult> partialResult) {
+        this.partial = partial;
+        this.partialResult = partialResult;
+    }
 }

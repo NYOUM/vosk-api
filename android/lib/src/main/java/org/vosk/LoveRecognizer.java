@@ -1,7 +1,12 @@
 package org.vosk;
 
+import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoveRecognizer {
 
@@ -13,8 +18,7 @@ public class LoveRecognizer {
         return recognizer.acceptWaveForm(audioBuffer, readerLength);
     }
 
-    public String getResult() {
-        // TODO Result deserialization
+    public Result getResult() {
         return extractResult(recognizer.getResult());
     }
 
@@ -22,8 +26,7 @@ public class LoveRecognizer {
         return extractPartialResult(recognizer.getPartialResult());
     }
 
-    public String getFinalResult() {
-        // TODO Result deserialization
+    public Result getFinalResult() {
         return extractResult(recognizer.getFinalResult());
     }
 
@@ -35,14 +38,14 @@ public class LoveRecognizer {
         recognizer.setPartialWords(partialWords);
     }
 
-    public PartialResult extractPartialResult(String partialResult) {
+    private PartialResult extractPartialResult(String partialResult) {
         try {
             JSONObject partialObject = new JSONObject(partialResult);
             
-            PartialResult deserialized = new PartialResult();
-            deserialized.partial = partialObject.getString("partial");
-
-            // TODO partial_result list
+            PartialResult deserialized = new PartialResult(
+                    partialObject.getString("partial"),
+                    deserializeWords(partialObject, "partial_result")
+            );
 
             return deserialized;
         } catch (JSONException e) {
@@ -50,12 +53,42 @@ public class LoveRecognizer {
         }
     }
 
-    public String extractResult(String result) {
+    private Result extractResult(String result) {
         try {
-            JSONObject partialObject = new JSONObject(result);
-            return partialObject.getString("text");
+            JSONObject resultJSON = new JSONObject(result);
+
+            Result deserialized = new Result(
+                    resultJSON.getString("text"),
+                    deserializeWords(resultJSON, "result")
+            );
+
+            return deserialized;
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Nullable
+    private List<WordResult> deserializeWords(JSONObject json, String fieldName) throws JSONException {
+
+        // no need to include Gson/Jackson for something trivial
+        JSONArray wordsJSON = json.optJSONArray(fieldName);
+        if (wordsJSON == null) {
+            return null;
+        }
+
+        List<WordResult> words = new ArrayList<>(wordsJSON.length());
+        for (int i = 0; i < wordsJSON.length(); i++) {
+            JSONObject wordJSON = wordsJSON.getJSONObject(i);
+            WordResult word = new WordResult(
+                    wordJSON.getDouble ("conf"),
+                    wordJSON.getDouble("start"),
+                    wordJSON.getDouble("end"),
+                    wordJSON.getString("word")
+            );
+            words.add(word);
+        }
+
+        return words;
     }
 }
