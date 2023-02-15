@@ -1,21 +1,33 @@
-def archiveName = "vosk-android"
-def pomName = "Vosk Android"
-def pomDescription = "Vosk speech recognition library for Android"
+def archiveName = "nyoum-vosk-android"
 
 android {
-    compileSdkVersion 29
+    compileSdk 33
+
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 29
+        minSdk 21
+        targetSdk 33
         versionCode 6
         versionName = version
-        archivesBaseName = archiveName
-        ndkVersion = "22.1.7171670"
+
+        ndkVersion = "25.1.8937393"
+        project.archivesBaseName = archiveName
     }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+//    publishing {
+//        singleVariant("release") {}
+//    }
 }
 
 task buildVosk(type: Exec) {
@@ -25,29 +37,30 @@ task buildVosk(type: Exec) {
 
 dependencies {
     api 'net.java.dev.jna:jna:4.4.0@aar'
+    implementation 'org.jetbrains:annotations:15.0'
 }
 
 //preBuild.dependsOn buildVosk
-
-publishing {
-    publications {
-        aar(MavenPublication) {
-            artifactId = archiveName
-            artifact("$buildDir/outputs/aar/$archiveName-release.aar")
-            pom {
-                name = pomName
-                description = pomDescription
+afterEvaluate {
+    publishing {
+        publications {
+            bar(MavenPublication) {
+                groupId = "com.nyoum"
+                artifactId = "vosk"
+                version = android.defaultConfig.versionName
+                artifact("$buildDir/outputs/aar/$archiveName-release.aar")
             }
-            //generate pom nodes for dependencies
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-                configurations.implementation.allDependencies.each { dependency ->
-                    if (dependency.name != 'unspecified') {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', dependency.group)
-                        dependencyNode.appendNode('artifactId', dependency.name)
-                        dependencyNode.appendNode('version', dependency.version)
-                    }
+        }
+
+        repositories {
+            maven {
+                name "GitHubPackages"
+
+                url = uri("https://maven.pkg.github.com/NYOUM/vosk-api")
+
+                credentials {
+                    username = getProperty('gpr.usr') ?: System.getenv("GPR_USER")
+                    password = getProperty('gpr.key') ?: System.getenv("GPR_API_KEY")
                 }
             }
         }

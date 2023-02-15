@@ -5,6 +5,7 @@
 nohup.out
 
 # Gradle files
+.idea
 .gradle/
 gradlew
 gradlew.bat
@@ -13,6 +14,7 @@ local.properties
 gradle.properties
 
 # Android
+android/.idea
 android/build
 android/lib/build
 android/model-en/build
