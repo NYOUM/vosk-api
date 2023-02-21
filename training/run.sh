@@ -9,9 +9,8 @@ stop_stage=100
 . utils/parse_options.sh
 
 # Data preparation
-read -p "Enter dataset url: " data_url
-
 if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
+  data_url=https://mozilla-common-voice-datasets.s3.dualstack.us-west-2.amazonaws.com/cv-corpus-12.0-2022-12-07/cv-corpus-12.0-2022-12-07-ur.tar.gz
   database=corpus
 
   mkdir -p $database
