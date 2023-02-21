@@ -9,9 +9,9 @@ stop_stage=100
 . utils/parse_options.sh
 
 # Data preparation
+read -p "Enter dataset url: " data_url
+
 if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
-  data_url=www.openslr.org/resources/31
-  lm_url=www.openslr.org/resources/11
   database=corpus
 
   mkdir -p $database
@@ -19,10 +19,10 @@ if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
     local/download_and_untar.sh $database $data_url $part
   done
 
-  local/download_lm.sh $lm_url $database data/local/lm
+  local/download_lm.sh $database data/local/lm
 
-  local/data_prep.sh $database/LibriSpeech/train-clean-5 data/train
-  local/data_prep.sh $database/LibriSpeech/dev-clean-2 data/test
+  local/data_prep.sh $database/cv-corpus-12.0-2022-12-07/ur/clips data/train
+  local/data_prep.sh $database/cv-corpus-12.0-2022-12-07/ur/clips data/test
 fi
 
 # Dictionary formatting
