@@ -14,9 +14,7 @@ if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
   database=corpus
 
   mkdir -p $database
-  for part in dev-clean-2 train-clean-5; do
-    local/download_and_untar.sh $database $data_url
-  done
+  local/download_and_untar.sh $database $data_url
 
   local/download_lm.sh $database data/local/lm
 
